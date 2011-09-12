@@ -1,0 +1,48 @@
+===R Short Course Bundle=== 
+
+This text file contains a very brief description of the contents of
+this directory.
+
+This directory contains all source components of the Introduction to R
+short course provided for incoming PSC graduate students at the
+University of Rochester. It also includes some external texts for
+supplementary reference.
+
+The text was created using LaTex.
+
+Contact: Jonathan Olmsted <jpolmsted@gmail.com>
+
+===============================
+
+===Contents Description===
+
+*COPYING
+	
+	Plain Text file containing license information.
+
+*Data
+
+        Directory with data files used in the the R text.
+
+*External
+
+        Directory with external supplementary materials useful for R
+        beginners.
+
+*HW
+
+        Directory with homework problems, code, and an answer key.
+
+*README 
+
+        This file.
+
+*Text
+
+        Directory with the LaTeX files to compile the text. This
+        directory is structured such that different topics are
+        contained in LaTeX input files (.tex) in appropriately named
+        subdirectories. The LaTeX file (.tex) that is in the root of
+        this subdirectory is the only one that needs to be compiled.
+
+==========================
