@@ -1,0 +1,97 @@
+\message{ !name(../full_course.tex)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PREAMBLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%% CLASS %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\documentclass[10pt,letterpaper]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\usepackage[debugshow, final]{graphicx}
+\usepackage{amsmath, amssymb, amsthm, amsfonts} 
+\usepackage{enumerate}
+\usepackage{fancybox} 
+\usepackage{ltablex}
+\usepackage{fancyhdr}
+\usepackage{setspace} 
+% \usepackage[top=1in,left=1in,bottom=1in,right=1in]{geometry} 
+\usepackage{natbib}
+\usepackage{rotating}
+\usepackage{setspace}
+\usepackage{multicol}
+\usepackage{textcomp} 
+\usepackage{pdflscape}
+\usepackage{lscape}
+\usepackage[table]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{subfigure}
+\usepackage{hyperref}
+\usepackage{cclicenses}
+\usepackage[all]{hypcap}
+\usepackage{listings}
+% \usepackage{pxfonts}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% SETTINGS %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\pagestyle{fancy}
+% \lhead{}
+% \chead{}
+% \rhead{}
+% \cfoot{\thepage}
+
+\author{Prepared for the starlab by J.P.\ Olmsted}
+
+\title{\tsl{}'s Introduction to \R: A Short Course} 
+
+\date{Updated: \today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%% CUSTOM MACROS %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\let\margin\marginpar
+\newcommand\myMargin[1]{
+  \margin{\singlespace\raggedright\scriptsize
+    \textsf{#1}}
+} 
+\renewcommand{\marginpar}[1]{\myMargin{#1}}
+
+\newcommand\blurb[1]{
+  \begin{center}
+    \parbox[h]{.75\linewidth}{
+      \footnotesize \singlespace
+      #1  
+    }
+  \end{center}
+}
+
+\newcommand\R[0]{\texttt{R}}
+
+\newcommand\tsl[0]{\textbf{the star lab}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONTENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\begin{document}
+
+\message{ !name(4_Case2/4_Case2.tex) !offset(77) }
+as.character(dfSpending1$State)
+\message{ !name(../full_course.tex) !offset(62) }
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+

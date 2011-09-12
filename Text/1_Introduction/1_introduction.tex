@@ -1,0 +1,240 @@
+\part{An Introduction to Using \R}
+
+This part of the short course introduces you to \R{} and provides a
+basic overview of its use.
+
+\section{What is \R?}
+
+\begin{itemize}
+\item a statistical scripting language (i.e.\ it was created with data
+  in mind and you can use the language interactively)
+
+\item a statistical environment (i.e.\ it is a program you open up and
+  interact with)
+
+\item open-source, free, compatible with most platforms, and
+  constantly updated
+
+\item the most common platform for quantitative work in political
+  science (or at least I am claiming this)
+
+\end{itemize}
+
+You can find out more about \R{} at \url{http://www.r-project.org/}.
+
+\section{Why Would You Use \R{}?}
+\begin{itemize}
+\item you will have to use it for PSC 405 and PSC 505 problem sets
+
+\item it is the ``go to'' program for non-standard numerical analysis
+  in political science
+
+\item it was created with data in mind (so you aren't forcing a square
+  peg in a round hole)
+
+\item the language and your code is as much a way of communicating a
+  set of instructions to other researchers as it is to your computer
+
+\item the graphics capabilities of \R{} are un-rivaled among statistics
+  software
+
+\item \R{} can be anything you want it to be because it is so easily
+  extended
+
+\end{itemize}
+
+Since you are now convinced that you would like to use \R{}, you can
+download it at \url{http://www.r-project.org/index.html}. However, you
+won't need to download it if you are in \tsl{}. It is
+already installed on these computers.
+
+\section{\R~and Your Workflow}
+
+The role that \R{} will play in your work and how it will fit into your
+workflow will vary. However, there is a general structure to it all.
+
+\begin{enumerate}
+\item come up with a numerical problem to solve
+\item conceptualize a set of steps to solve this problem
+\item translate these steps into the \R{} scripting language
+\item run your \R{} code
+\item debug your \R{} code
+\item produce graphics (if applicable)
+\item consume you results (either textual or graphical)
+\end{enumerate}
+
+\paragraph{Step 1.} \R{} will not tell you what you want to do. It can
+help you get there, but you simply must know where you want to go. The
+problem to be solved can range from \textit{calculating the sampling
+  distribution of the sample mean of samples of five random draws from
+  a distribution} to \textit{identifying the treatment effect of being exposed
+to negative campaign advertisements on voter turnout}. In general, it
+is a bad sign to have already opened \R{} if you don't know what you
+want to do.
+
+\paragraph{Step 2.} If \R{} is your first computer language, this step
+will likely be tricky. This is all about translating a
+human understanding of a problem into a machine-ready algorithm. For
+some people this is easier than it is for others. For all people,
+though, practice makes it easier.
+
+\paragraph{Step 3.} This will be the hardest step. As you use \R{}, you
+understanding of what is and is not possible in \R{} will evolve. The
+code you write will take on incredibly different styles.
+
+\par Because you are writing your \R{} code in a text-editor it will
+be a plain text file (like in \LaTeX{}!).
+
+\par When you write your \R{} code, I recommend doing several things:
+\begin{itemize}
+\item \textbf{do not use} the feature-less script editor in \R{}
+  itself
+
+\item \textbf{do use} a feature-full editor that integrates well
+  enough with \R{} (e.g.\ RWinEDT on \tsl{} computers)
+
+\item \textbf{do use} an editor to write your code and then run it at
+  the \R{} prompt (this maintains transparency and reproducibility).
+
+\end{itemize}
+
+\paragraph{Step 4.} Running your code can happen at an interactive
+\R{} shell or in ``batch mode''. The latter option will most likely
+not be used by you any time soon. For our purposes we will run code
+interactively. But, that is different from performing operations ``on
+the fly''. If you write your code in RWinEdt, the toolbar icons
+provide a simple way of running your already written code at the
+interactive shell.
+
+\paragraph{Step 5.} There is a built-in debugger in R and there are
+some external packages which provide debugging facilities. I neither
+use nor recommend these. For the most part, there is nothing you can't
+debug with just some cleverness and the interactive command line. In
+reality, Steps 4 and 5 are iterative and repetitive. In it's idealized
+form, you might write your code in a single shot and run it without
+errors. In practice, this will not happen. The point is, though, that
+for any given project, you'll have it set up so that it can finally
+run without intervention or correcting. It will be as if you wrote
+completely correct code and sent it all to \R{}.
+
+\paragraph{Step 6.} \R{} is known for the ability to produce great
+graphical output. There are several different ``frameworks'' to
+produce graphics. We will only cover the \textit{base} graphics in
+this tutorial.
+
+\paragraph{Step 7.} How you consume your output is up to you. But,
+consumption is not a one-shot deal. Therefore, part of this step is
+ensuring reproducibility. Also, you will want to ``export'' the
+product of your hard work to a non-\R{} format. This can be a plain
+text file of your results or a \texttt{.pdf} file with a figure you
+created.
+
+\section{The VERY Basics of the \R{} Interpreter}
+
+\subsection{The Prompts}
+\R{} tells you it is ready for input by displaying a
+``\texttt{>}''. \R{} knows its own language, so if you hit
+\textit{enter} and you expect something to evaluate, but \R{} keeps
+giving you a ``\texttt{+}'' (to tell you it needs more) there is a
+syntax error. To get out of the perpetual ``\texttt{+}'' prompts, hit
+\textit{ctrl} + \textit{c} or \textit{esc}. When you get this problem,
+there is likely to be a missing ``\verb="='', ``\verb=,='', or
+``\verb=)=''.
+
+At the end of a command, you hit \textit{enter} if you are at the
+command line. If you are writing your script file in a text editor,
+simply hit \textit{enter} to add a line break and start a new line.
+
+\subsection{Comments}
+\R{} interprets anything after a ``\texttt{\#}'' as a comment. The
+comment ends and \R{} begins to interpret code once a new line is
+started. Multi-line comments require a new comment character on each
+line.
+
+\subsection{Spaces}
+\R{}, in general, ignores spaces between correctly entered objects and
+operators. Spaces are not part of the names of objects or
+operators. Spaces may be contained in character strings and they
+matter.
+
+\subsection{Multiple Commands on a Physical Line}
+In \R{}, you can place two (or more) complete sets of commands on the
+same physical line (i.e.\ without hitting \textit{enter}). You do this
+by separating them with a ``\verb=;=''. However, this is not
+recommended and the utility of it is questionable.
+
+
+\section{Exercises}
+
+These short exercises are intended to familiarize you with entering
+commands at the prompt and the various kinds of windows that might
+open as a result.
+
+\begin{enumerate}
+\item Start \R{} on the machines in \tsl{}.
+
+\item If the \texttt{RWinEdt} package is not automatically loaded,
+  type \texttt{library(RWinEdt)}. Hit \textit{enter}.
+
+\item Type \texttt{sessionInfo()} at the command prompt (i.e.\
+  \texttt{>}) and hit \textit{enter}. Your are running the function
+  \texttt{sessionInfo} without any arguments. \R{} is ``computing''
+  the output of the function and then ``printing'' the output with an
+  ``appropriate'' method.
+
+\item Type \texttt{citation()} at the command prompt and hit
+  \textit{enter}. Recall the mention of BibTeX from the \LaTeX{}
+  course? \R{} is ``computing'' the output of the function
+  \texttt{citation} and then ``printing'' the output with an
+  ``appropriate'' method.
+
+\item Enter \texttt{demo(graphics)} at the prompt. Progress through
+  the various demonstrated plots until you have seen them all. Close
+  the plot window. \R{} is ``computing'' the output of the function
+  \texttt{demo} which has been passed the argument
+  \texttt{graphics}. In fact, \texttt{graphics} is a package which
+  contains functions for creating graphics. Would you like to know
+  something about it? Enter \texttt{?graphics} at the command
+  line. This displays the help page for the \texttt{graphics}
+  package. Close this.
+
+\item Enter the following in WinEdt. You do not need to save this R
+  script.
+
+\begin{verbatim}
+###
+### Region 1
+###
+# is this 2 or 3?
+1 + 1 # + 1
+###
+
+###
+### Region 2
+###
+  1+ 1   +
+1
+###
+
+###
+### Region 3
+###
+"asdf " == "asdf"
+###
+\end{verbatim}
+
+\item Evaluate each ``region'' one at a time. So, select the region
+  with your cursor, and press the RWinEdt toolbar button with the word
+  ``paste'' on it. This pastes the selected region into the \R{}
+  shell.
+
+\item Type \texttt{1 +} and hit \textit{enter}. Hit \textit{enter} a
+  number of times. How do you get out of this?
+
+\item Enter \texttt{q()} at the prompt. Respond ``\texttt{N}'' (no).
+\end{enumerate}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../full_course"
+%%% End: 

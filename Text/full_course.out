@@ -1,0 +1,51 @@
+\BOOKMARK [0][-]{part.1}{I An Introduction to Using R}{}
+\BOOKMARK [1][-]{section.1}{What is R?}{part.1}
+\BOOKMARK [1][-]{section.2}{Why Would You Use R?}{part.1}
+\BOOKMARK [1][-]{section.3}{R and Your Workflow}{part.1}
+\BOOKMARK [1][-]{section.4}{The VERY Basics of the R Interpreter}{part.1}
+\BOOKMARK [2][-]{subsection.4.1}{The Prompts}{section.4}
+\BOOKMARK [2][-]{subsection.4.2}{Comments}{section.4}
+\BOOKMARK [2][-]{subsection.4.3}{Spaces}{section.4}
+\BOOKMARK [2][-]{subsection.4.4}{Multiple Commands on a Physical Line}{section.4}
+\BOOKMARK [1][-]{section.5}{Exercises}{part.1}
+\BOOKMARK [0][-]{part.2}{II Fundamentals of Working in R}{}
+\BOOKMARK [1][-]{section.6}{Objects, Modes, and Attributes \203Oh my!}{part.2}
+\BOOKMARK [2][-]{subsection.6.1}{Objects}{section.6}
+\BOOKMARK [2][-]{subsection.6.2}{Modes}{section.6}
+\BOOKMARK [2][-]{subsection.6.3}{Attributes}{section.6}
+\BOOKMARK [1][-]{section.7}{Assignment, References, Scope}{part.2}
+\BOOKMARK [2][-]{subsection.7.1}{Assignment}{section.7}
+\BOOKMARK [3][-]{subsubsection.7.1.1}{Naming Rules}{subsection.7.1}
+\BOOKMARK [2][-]{subsection.7.2}{References}{section.7}
+\BOOKMARK [2][-]{subsection.7.3}{Scope}{section.7}
+\BOOKMARK [1][-]{section.8}{Asking for Help}{part.2}
+\BOOKMARK [2][-]{subsection.8.1}{R Documentation}{section.8}
+\BOOKMARK [2][-]{subsection.8.2}{R Community}{section.8}
+\BOOKMARK [1][-]{section.9}{Exercises}{part.2}
+\BOOKMARK [0][-]{part.3}{III Case One: Simple Object Creation, Manipulation, Summarizing Objects, Plotting, and Bookkeeping}{}
+\BOOKMARK [1][-]{section.10}{Simple Object Creation and Manipulation}{part.3}
+\BOOKMARK [2][-]{subsection.10.1}{Vectors}{section.10}
+\BOOKMARK [2][-]{subsection.10.2}{Pseudo-Random Numbers and Using Functions}{section.10}
+\BOOKMARK [2][-]{subsection.10.3}{Basic Mathematical Operators}{section.10}
+\BOOKMARK [2][-]{subsection.10.4}{Matrices}{section.10}
+\BOOKMARK [2][-]{subsection.10.5}{Dataframes}{section.10}
+\BOOKMARK [2][-]{subsection.10.6}{Indexing and Subsetting}{section.10}
+\BOOKMARK [2][-]{subsection.10.7}{Logical Operators}{section.10}
+\BOOKMARK [2][-]{subsection.10.8}{Simple Recoding}{section.10}
+\BOOKMARK [1][-]{section.11}{Summary Functions}{part.3}
+\BOOKMARK [1][-]{section.12}{Basic Plots}{part.3}
+\BOOKMARK [1][-]{section.13}{Object Bookkeeping}{part.3}
+\BOOKMARK [0][-]{part.4}{IV Case Two: Realistic Data Management and Realistic Plotting}{}
+\BOOKMARK [1][-]{section.14}{Statement of Problem}{part.4}
+\BOOKMARK [1][-]{section.15}{Loading the Data Files}{part.4}
+\BOOKMARK [1][-]{section.16}{Cleaning and Merging the Data Files}{part.4}
+\BOOKMARK [1][-]{section.17}{Numerical Summaries of the Data}{part.4}
+\BOOKMARK [1][-]{section.18}{Graphical Summaries of the Data}{part.4}
+\BOOKMARK [0][-]{part.5}{V Writing Programs}{}
+\BOOKMARK [1][-]{section.19}{Control Flow Operations}{part.5}
+\BOOKMARK [2][-]{subsection.19.1}{Conditionals}{section.19}
+\BOOKMARK [2][-]{subsection.19.2}{Loops}{section.19}
+\BOOKMARK [1][-]{section.20}{Sampling}{part.5}
+\BOOKMARK [1][-]{section.21}{Functional Programming}{part.5}
+\BOOKMARK [2][-]{subsection.21.1}{Basics}{section.21}
+\BOOKMARK [2][-]{subsection.21.2}{Scope}{section.21}

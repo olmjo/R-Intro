@@ -1,0 +1,358 @@
+\part{Case One: Simple Object Creation, Manipulation, Summarizing
+  Objects, Plotting, and Bookkeeping}
+
+This part of the short course is a guided walk-through some fictional
+analyses. We will create some data. Recode and summarize this
+data. Then, we will make some simple plots. Lastly, we learn how to
+save an \R{} object for later use, and discuss object bookkeeping.
+
+\section{Simple Object Creation and Manipulation}
+\subsection{Vectors}
+We will start this walk-through by creating a vector of names:
+
+\verb=vPeople <- c("Tyson", "Jonathan1", "Gary", "Peter", "Jonathan2")=. 
+\texttt{vPeople} is a vector of character strings. Create three more 
+vectors as follows:
+\begin{verbatim}
+vEoM <- c(FALSE, TRUE, FALSE, TRUE, NA)
+
+vAge <- c(28, 25, 25, 30, 25)
+
+vState <- c("TX", "CT", "CA", "DE", "MO")
+\end{verbatim}
+Each of these vectors is of a different mode. You can verify this with
+\texttt{is()}. The \texttt{c()} function lets us concantenate elements
+of the same mode and form a vector.
+
+One technical thing to note is that ``constants'' like 1 or 4 are
+vectors of length 1.
+
+Two commands you may use from time to time are \texttt{seq()} and
+\texttt{rep()}. Lastly, don't forget about the use of \texttt{:} to
+create consecutive integer sequences.
+
+\subsection{Pseudo-Random Numbers and Using Functions}
+
+To create several more ``variable'' vectors we will use \R{}'s
+pseudo-RNG capabilities. Consider \texttt{?rnorm}. The most common
+probability distributions will have a page like this. So, for the
+Normal distribution we see that:
+\begin{description}
+  \item[\texttt{rnorm}] generates random values
+  \item[\texttt{dnorm}] is the density function (i.e.\ $f(x)$)
+  \item[\texttt{pnorm}] is the distribution function (i.e.\ $F(x)$)
+  \item[\texttt{qnorm}] is the quantile function
+\end{description}
+Because these are so closely related they appear on the same help
+page. In the case of \texttt{rnorm}, we see that the function takes
+three named arguments. The names are \texttt{n}, \texttt{mean}, and
+\texttt{sd}. The last two of these have default values (0 and 1,
+respectively). This means that you can evaluate a call to
+\texttt{rnorm} without explicitly setting a value for \texttt{mean} or
+\texttt{sd}.
+
+Run \texttt{rnorm(4)} three times at the shell prompt. Then run
+\verb=a <- rnorm(4)=. Now, reference \texttt{a} at the shell prompt
+four times. Why are these different?
+
+Using the RNG capabilities we create three more vectors:
+\begin{verbatim}
+vVar1 <- rbinom(5, 2, .5)
+vVar2 <- rnorm(length(vPeople), vAge)
+vVar3 <- rnorm(sd = vAge, mean = vAge, n = length(vPeople))
+\end{verbatim}
+Notice that when we call the function, the arguments do not need to
+follow the order they are listed in the help file exactly. How does
+\R{} match arguments if they aren't always necessary and if the order
+can change? The \R{} manuals explain the precise set of rules, but
+there is a shortcut to not having to worry about this. If an argument
+is a named argument in the help file, explicitly name it. So, run
+\texttt{rnorm(n = 4)} and not \texttt{rnorm(4)}.
+
+\subsection{Basic Mathematical Operators}
+We can perform arithmatic in the natural way. The command \texttt{4 +
+  6} evaluates as we would expect. Other operators like \texttt{-},
+\texttt{/}, \texttt{*}, \texttt{\%\%}, \texttt{exp()}, \texttt{log()},
+\texttt{\^}, and \texttt{abs()} work, too. Create this relatively
+complicated object using the arithmatic operators, the objects we have
+already created, and another call to the RNG.
+\begin{verbatim}
+vVarY <- (4 * exp(vVar1) + 
+          abs(vVar2) + (vVar3) ^ (2) + 
+          runif(vPeople, -1, 1)
+          )
+\end{verbatim}
+We know that \texttt{vVar1} is a vector. What is \texttt{exp(vVar1)}?
+It too is a vector. How can you check this? \R{} evaluates the
+\texttt{exp} function element by element and then concantenates the
+result. Similarly, \texttt{4 * exp(vVar1)} is formed by multiplying
+each element in the vector we just created by 4 and then
+concantenating the results. \R{} adds vectors the same way, element by
+element.
+
+\R{} has trigonometric functions like \texttt{sin()} and
+\texttt{cos()}, too.
+
+Scientific notation is achieved by typing \texttt{1e3} and
+\texttt{1e-1}.
+
+\subsection{Matrices}
+
+Recall that matrices must be of the same mode. How are the following
+two objects different? 
+\begin{verbatim}
+cbind(vVar1, vVar2, vVar3)
+cbind(vVar1, vVar2, vVar3, vState)
+\end{verbatim}
+
+\R{} trys hard to make the code you give it work. Often times, this
+means it will coerce objects into different modes so that the code can
+run. Here, numerical elements are coerced to character strings.
+
+Create the object \verb=mNums <- cbind(vVar1, vVar2, vVar3)=. We can
+get information about its dimensionality with \texttt{dim()},
+\texttt{nrow()}, and \texttt{ncol()}. We can refer to just the elemnts on
+the main diagonal with \texttt{diag(mNums)}. Interestingly enough, we
+can create a square, diagonal matrix with of size 6, for example, with
+\texttt{diag(6)}. The arithmatic operators work on matrices just like
+they do on vectors (i.e.\ element-wise). Try a few on \texttt{mNums}.
+
+Now, there are also matrix-specific operations. We can transpose the
+the matrix with \texttt{t()}. We perform matrix multiplication with
+\texttt{\%*\%}. We can calculate the determinent of a square matrix
+with \texttt{det()}. We can invert a square matrix with \texttt{solve()}
+
+Sometimes the rows and columns have labels which makes life easier for
+users. These are stored as a vector of character strings and this is,
+not surprisingly, an object itself. See \texttt{?rownames} and
+\texttt{?colnames}.
+
+\subsection{Dataframes}
+Create a data frame with the following code:
+\begin{verbatim}
+dfData <- data.frame(vPeople, vEoM, vAge, vState, 
+                     vVar1, vVar2, vVar3, vVarY
+                     )
+\end{verbatim}
+Print out the object \texttt{dfData}. Notice that character strings
+become factors. The numbers remain numerical elements and are not
+coerced. Lastly, we can see that the logical values have remained as
+logicals. This happens because dataframes allow us to mix modes in a
+way matrices do not. See \texttt{?data.frame} for more information on
+creating them.
+
+\subsection{Indexing and Subsetting}
+We can refer to subsets of vector, matrix, and dataframe
+objects. Vectors have a single dimension (i.e.\ length). So, we simply
+specify the positions corresponding to the elements we wish to extract
+from the vector. Try:
+
+\begin{verbatim}
+vPeople[1]
+vPeople[-1]
+vPeople[c(1,4,2)]
+\end{verbatim}
+
+Matrices have two dimensions. So, to refer to particular elements,
+specify the exact row and column as in \texttt{mNums[2, 3]} or
+\texttt{mNums[c(2,1), 3]}. You can refer to entire columns with
+\texttt{mNums[2, ]} and entire rows with \texttt{mNums[, 3]}.
+
+Elements in dataframes can be referred to just like they can in
+matrices. But, there is some added functionality in this case. We can
+still do:
+\begin{verbatim}
+dfData[1,1]
+dfData[-1,-1]
+dfData[-1,-1]
+\end{verbatim}
+However, the columns can be referred to in a special way. Try:
+\begin{verbatim}
+dfData$vPeople
+dfData[, "vAge"]
+\end{verbatim}
+To see the names of the columns returns as character vector use
+\texttt{names(dfData)}. Even though they appear to be similar,
+\texttt{dfData\$vPeople} and \texttt{vPeople} are two different
+objects.
+
+We can subset dataframes based on logical tests. Typically, the
+logical test we use will be dependent on the data, itself. See
+\texttt{?subset}. Then, consider \verb=subset(dfData, vAge > 25)=. One
+very important point to note is that the \texttt{vAge} term in the
+logical test refers to the column name in \texttt{dfData} and not the
+object by the same name. Confirm this by replacing the object
+\texttt{vAge} with a vector that equals the old vector plus 100. Rerun
+the subset command.
+
+Moreover, we can use any arbitrary logical vector to subset any
+object. Consider:
+\begin{verbatim}
+vPeople[c(TRUE, TRUE, FALSE, FALSE, TRUE)]
+vPeople[vAge > 25]
+vPeople[((1:5) * 3) < 10]
+\end{verbatim}
+
+\subsection{Logical Operators}
+We just saw some logical vectors used in indexing and subsetting. In
+general, they will be very useful. The common logical operators are
+\texttt{<}, \texttt{>}, \texttt{|}, \texttt{\&}, \texttt{is.*()},
+\texttt{!}, \texttt{<=}, \texttt{>=} and \texttt{xor()}.
+
+Two particularly useful functions are \texttt{any()} and
+\texttt{each()}. They test a vector of logicals for whether or not at
+least one and every element, respectively, evaluates to \texttt{TRUE}.
+
+\subsection{Simple Recoding}
+Combining the ways to index particular elements in an object and the
+set of logical operators, we are equipped to do some simple recoding
+of values within objects that we have already created.
+
+If we find out that Tyson is not from Texas, but from France (hence,
+Chatagnier), we will want to change the entry for him in the state
+variable. We will leave alone the state variable in the
+dataframe. Instead, consider the original vector we created,
+\texttt{vState}. If we want Tyson's entry to display that he is from
+\texttt{FR} we can use \verb=vState[1] <- "FR"= because we know the
+first entry corresponds to him. Confirm that this worked by
+considering \texttt{vState}. However, this required we know his entry
+was in the first row. If we didn't know this, we could use
+\begin{verbatim}
+vState[vPeople == "Tyson"] <- "FR"
+\end{verbatim}
+However, we must be careful. This will change the state to \texttt{FR}
+for every Tyson there is. If we have more than one, we'd need to go
+about this another way.
+
+Alternatively, we could use the \texttt{ifelse()} function. Suppose we
+have to censor the state of origin for all individuals under the age
+of 26. We could use
+\begin{verbatim}
+vState <- ifelse(vAge < 26, NA, vState)
+\end{verbatim}
+To see why, consider \texttt{?ifelse}.
+
+\section{Summary Functions}
+Many times, when using \R{}, we will want to describe many numbers or
+observations with some sort of summary value like the mean. We will
+use different summaries for categorical, ordinal, and interval level
+data. At the same time, we have functions for both univariate and
+multivariate summaries.
+
+The functions \texttt{mean()}, \texttt{median()}, \texttt{mode()},
+\texttt{sd()}, \texttt{sum()}, \texttt{max()}, and \texttt{min}
+describe the central tendencies and other aspects of the data. How
+these functions handle missing data (i.e. \texttt{NA}) matters
+greatly. Consider the following:
+\begin{verbatim}
+mean(vVarY)
+min(vVarY)
+max(vVarY)
+sd(vVarY)
+
+mean(vEoM)
+mean(vEoM, na.rm = TRUE)
+\end{verbatim}
+
+However, instead of evaluating several functions for each vector we
+can use \texttt{summary(dfData)} and this will give us most of the
+information we might have wanted. \R{} wisely customize the summary
+for each variable based on the kind of data it is. For factors and
+logicals, we find out about frequencies. For numerical data, we get a
+description of the distribution.
+
+Beyond these univariate measures, we can use \texttt{cor()} to
+calculate the correlation coefficient between two numerical vectors or
+\texttt{table()} to count the number of observations occurring within
+each unique classification between multiple factor vectors. Consider
+the following:
+\begin{verbatim}
+cor(vVarY, vVar1)
+table(dfData$vAge, dfData$vState)
+\end{verbatim}
+
+If we are interested in conditional summaries, we need to do a little
+more work. There are two natural ways to approach questions like, what
+is the average value of \texttt{vVarY} within people of the same
+age. We know there are three different groups because of
+\texttt{unique(dfData\$vAge)}. What does \texttt{unique()} do?
+
+We could subset the dataframe according to age, then run
+\texttt{summary} or \texttt{mean}. Or, instead, we could use a very
+convenient function called \texttt{tapply()}. Consider
+\texttt{?tapply} and then the code below.
+\begin{verbatim}
+mean(subset(dfData, vAge == 25)$vVarY)
+tapply(dfData$vVarY, dfData$vAge, mean)
+\end{verbatim}
+
+\section{Basic Plots}
+Although the numerical/textual summaries of our data will be helpful,
+we often look to make figures to communicate some aspect of our date
+or some result to others. For now, we will simply go through different
+kinds of plots without concerning ourselves with customization.
+
+If we have univariate data, we could use a boxplot or a histogram. Consider
+the following:
+\begin{verbatim}
+boxplot(rnorm(n = 50))
+hist(rnorm(n = 50))
+\end{verbatim}
+
+If we were so inclined, we could simply plot the values of interest
+against an index. Try:
+\begin{verbatim}
+plot(rnorm(n = 50))
+\end{verbatim}
+
+If we have bivariate data, we might want a scatterplot with lines
+connecting observations in sequence. Consider:
+\begin{verbatim}
+plot(rnorm(n = 50), rnorm(n = 50), type = "b")
+\end{verbatim}
+
+For three dimensional data, we can generate a surface plot. Use:
+\begin{verbatim}
+persp(z = matrix(data = sort(rnorm(100, sd = 3)), ncol = 10))
+\end{verbatim}
+
+The options are many and
+\url{http://cran.r-project.org/web/views/Graphics.html} is a good link
+to read. If you know the kind of plot you would like to create, it
+will most likely either exist already or you can create it. We will
+cover building plots from the ground up and customization later.
+
+\section{Object Bookkeeping}
+
+Recall, just about everything in \R{} is an object. And, by now, we've
+created a number of objects. To display all of the objects type
+\texttt{ls()}. What is the class of the output of this function call?
+If you would like to remove an object named \texttt{foo}, try
+\texttt{rm(foo)}. If you would like to remove every object, use
+\texttt{rm(list = ls())}. Some folks use this at the top of each
+script to make sure their \R{} session is fresh. I would recommend
+this.
+
+Now, let's create an object that will contain all of our work. A list
+is the best choice here. First, we initialize a list. Second, we will
+save the dataframe as one element in this list. Third, and last we
+will leave a note for ourselves as a character string.
+\begin{verbatim}
+lOutput <- list()
+lOutput$data <- dfData
+lOutput$comment <- "today's work was very rewarding"
+lOutput
+\end{verbatim}
+Now, we can reference the elements in the list by their names and the
+\texttt{\$} operator.
+
+To save the object \texttt{lOutput}, first look at
+\texttt{?save}. Then, run:
+\begin{verbatim}
+save(lOutput, file = "Z:/mydata.Rdata"}
+\end{verbatim}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../full_course"
+%%% End: 

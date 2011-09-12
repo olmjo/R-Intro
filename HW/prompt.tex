@@ -1,0 +1,321 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PREAMBLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%% CLASS %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\documentclass[10pt,letterpaper]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\usepackage[debugshow, final]{graphicx}
+\usepackage{amsmath, amssymb, amsthm, amsfonts} 
+\usepackage{enumerate}
+\usepackage{fancybox} 
+\usepackage{ltablex}
+\usepackage{fancyhdr}
+\usepackage{setspace} 
+\usepackage[top=1in,left=1in,bottom=1in,right=1in]{geometry} 
+\usepackage{natbib}
+\usepackage{setspace} 
+\usepackage{textcomp} 
+\usepackage{pdflscape}
+\usepackage{lscape}
+\usepackage[table]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{subfigure}
+\usepackage{hyperref}
+\usepackage[all]{hypcap}
+\usepackage{listings}
+% \usepackage{pxfonts}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%% SETTINGS %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\pagestyle{fancy}
+\lhead{}
+\chead{\texttt{R} Course Problem Set (Answer Key)}
+\rhead{\today}
+\cfoot{\thepage}
+\rfoot{Prepared by J.\ P.\ Olmsted}
+
+\author{}
+\title{}
+\date{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%% CUSTOM MACROS %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\let\margin\marginpar
+\newcommand\myMargin[1]{
+  \margin{\singlespace\raggedright\scriptsize
+    \textsf{#1}}
+} 
+\renewcommand{\marginpar}[1]{\myMargin{#1}}
+
+\newcommand\blurb[1]{
+  \begin{center}
+    \parbox[h]{.75\linewidth}{
+      \footnotesize \singlespace
+      #1  
+    }
+  \end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONTENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\begin{document}
+
+%% \begin{titlepage}
+%%   
+%% \end{titlepage}
+
+\section*{Instructions}
+\paragraph{Submission.} All responses to these problems must be
+received via email in my inbox by Friday, January 28th by 5pm. A
+response should be in the form of a working, self-sufficient
+\texttt{R} script. Because this is the only file that needs to be
+turned in, you should place all information to identify whose
+submission it is inside comments in the script.
+
+\paragraph*{Resources.} The only external objects/data/functionality
+that you are allowed to use are \texttt{R} packages from
+\texttt{CRAN}. However, you do not need any at all.
+
+\paragraph*{Solutions.} Textual solutions to the problems should be
+placed as a comment after the code used to compute the
+answer. Graphical solutions should be comprised of the code used to
+generate the plots.
+
+\paragraph*{Incentive Structure.} The questions will each be worth
+different point values. Partial work can receive partial credit at my
+discretion. Two people will receive Starbucks gift cards (5\$). The
+decision rule used to draw the two winners will be as follows:
+\begin{enumerate}
+\item All valid problem sets will be graded and raw points assigned to
+  each person.
+\item Each point is worth one lottery ticket with your name on it.
+\item The total number of points possible is irrelevant except that it
+  places an upper limit on the number of lottery tickets you can
+  receive.
+\item The winner of the first gift card will be drawn from all of the
+  lottery tickets.
+\item The remainder of this winner's lottery tickets will be discarded.
+\item Another winner will be drawn from the remaining tickets using
+  the same procedure.
+\end{enumerate}
+
+Consequently, there is incentive to compete even if you know you won't
+have time to work each problem out.
+
+\paragraph{Assistance.} You \textbf{may not} ask any other first-year
+student any questions regarding this problem set except ``are you done
+yet?''  until after the deadline. You \textbf{may} ask other students
+in the program for their help and thoughts, but you must disclose the
+nature of this assignment! You \textbf{should} ask me questions since
+I have solutions already prepared!
+
+\paragraph{Solutions.} Where possible, the provided solutions reflect
+an approach to solving the problem which is like the material we
+covered in class. This does not mean there are not more concise or
+more efficient ways of solving the problem. For example, loops are
+employed here more than they should be in practice.
+
+\section*{Example}
+
+The following is an example question and the example code that might
+correspond to a full credit response.
+
+\subsection*{Example Question}
+Consider a sequence such that the $i^{th}$ term, $a_i$, is given
+by
+\[
+a_i = log\left((i^{i - 1})^{1/2}\right).
+\]
+
+Find the sum of the first 50 terms, that is, find
+\[
+\sum_{i = 1}^{50} a_i.
+\]
+\subsection*{Example Response}
+\lstset{ %
+  language=R,
+  basicstyle=\scriptsize\ttfamily, % the size of the fonts that are used
+  commentstyle=\ttfamily\color{gray},
+  % for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\ttfamily\color{gray}\footnotesize,      % the size of the fonts that are used
+  % for the line-numbers
+  stepnumber=1,                   % the step between two
+  % line-numbers. If it's 1 each line
+  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from
+  % the code
+  backgroundcolor=\color{white},  % choose the background color. You
+  % must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular
+  % underscores
+  showstringspaces=false,         % underline spaces within string
+  showtabs=false,                 % show tabs within strings adding
+  % particular underscores
+  frame=single,                % adds a frame around the code
+  tabsize=2,                % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only
+  % happen at whitespace
+  title=\lstname,                 % show the filename of files included
+  % with \lstinputlisting;
+  % also try caption instead of title
+  escapeinside={},         % if you want to add a comment within
+  % your code
+  keywordstyle={},
+  morekeywords={*,...}            % if you want to add more keywords to
+  % the set
+}
+
+\lstinputlisting{./hw_example.R}
+
+\section*{Problems}
+
+\subsection*{Problem 1}
+Consider random samples of size 10 from the F distribution with 3 and
+7 degrees of freedom. Use 1,000 such samples to calculate the standard
+deviation of the sampling distribution of the sample mean. (\textbf{10
+  points})
+
+% \lstinputlisting{./hw1.R}
+
+\subsection*{Problem 2}
+Consider the 26 letters of the Modern English alphabet as defined here
+(\url{http://en.wikipedia.org/wiki/English_alphabet}). Assume the
+following definitions:
+\begin{description}
+\item [Letter Value] The integer value of the index corresponding to a
+  particular letter given the standard \textit{a, b, c, d, \ldots}
+  order of the letters.\footnote{So, $\textrm{LV}(a) = 1$ and
+    $\textrm{LV}(z) = 26$ where $\textrm{LV}$ is the letter value
+    function which maps a letter to its letter value.}
+
+\item [Text Sum] The sum of the sequence of letter values
+  corresponding to a sequence of letters comprising a portion of text
+  where all whitespace and punctuation is ignored.
+\end{description}
+
+Find the \textit{Text Sum} corresponding to the main body of text on
+\url{http://www.rochester.edu/college/gradstudents/jolmsted/research/}
+which begins ``My primary academic interests \ldots'' and ends
+``\ldots original spatial voting model.'' (\textbf{20 points})
+
+\paragraph{Hint.} This problem requires ``string manipulation''.
+
+% \lstinputlisting{./hw2.R}
+
+\subsection*{Problem 3}
+
+Construct a function to compute whether a given integer input is
+``odd'' or ``even''. Use this function to confirm that the sum of the
+odd numbers between the 1 and 20, inclusive, is 100. (\textbf{5
+  points})
+
+% \lstinputlisting{./hw3.R}
+
+\subsection*{Problem 4}
+Consider $x = (x_1, x2_, \ldots, x_{1,000,000})$ and $y = (y_1, y_2,
+\ldots, y_{1,000,000})$ where
+\[
+x_i \sim N(0, \sigma = 1),
+\]
+and
+\[
+y_i \sim N(x_i, \sigma = s).
+\]
+Find some value of $s$ such that $\rho(x, y) \in (0.3, 0.4)$, where
+$\rho$ is the sample correlation between the vectors. You may consider
+$s$ a solution if three runs of the data-generating process produce
+$\rho$'s that satisfy the constraint. (\textbf{20 points})
+
+\paragraph{Note.} Technically, $\rho$ is a random variable because $x$
+and $y$ are random variables and it has non-zero density over the unit
+interval. However, for an appropriate value of $s$, the use of
+1,000,000 draws ensures that we can constrain the sampling
+distribution of $\rho$ to be sufficiently within the desired interval
+that we can ignore the chance that we will draw a sample which results
+in a correlation in the interval sometimes and not in others. That is,
+if you run the data generating process for a fixed $s$ several times
+and you get a $\rho$ that satisfies this constraint you can count this
+as an answer.
+
+% \lstinputlisting{./hw4.R}
+
+\subsection*{Problem 5}
+Base \texttt{R} and \texttt{R} packages provide datasets that don't
+need to be loaded from external files. They can be accessed with the
+function \texttt{data()}. Load the \texttt{airmiles} dataset and the
+\texttt{discoveries} dataset. The ``data'' that these two provide are
+two appropriately named vectors that are also \texttt{timeseries}
+objects. Use \verb=ts.intersect()= to merge the time series and then
+coerce this object to a dataframe object.
+
+\begin{enumerate}
+\item Code a new variable in the dataframe object such that it takes
+  on a value of 1 if both the number of \texttt{airmiles} is odd and
+  the number of \texttt{discoveries} is odd, the value 2 if both of
+  the other variables of interest are even, and the value 3 if the
+  variables of interest are mixed. Call this variable
+  ``yeartype''. (\textbf{5 points})
+
+\item If \texttt{yeartype} were a factor variable, what would the
+  summary statistics for that variable be? (\textbf{5 points})
+
+\item If \texttt{yeartype} were a numeric variable, what would the
+  summary statistics for that variable be? (\textbf{5 points})
+
+\item Calculate summary statistics conditional on the value of
+  yeartype. (\textbf{5 points})
+
+\item Plot a graph of \texttt{discoveries} vs.\ \texttt{airmiles} with
+  the following characteristics:
+  \begin{itemize}
+  \item the axes and title are given informative names (\textbf{5 points})
+  \item each $(x,y)$ point has a different character based on its \texttt{yeartype} (\textbf{5 points})
+  \item each $(x,y)$ point has a different color based on whether the
+    corresponding \texttt{airmiles} value is greater than the overall
+    average over each year or less than the overall average. Equality
+    can be assigned to either group. (\textbf{5 points})
+  \end{itemize}
+\end{enumerate}
+
+% \lstinputlisting{./hw5.R}
+
+\section*{Problem 6}
+Consider a sequence $b = (b_1, b_2, \ldots, b_k)$ where
+\[
+b_i = i + k.
+\]
+Find the $k$ that maximizes the sum of the sequence subject to the
+ceiling $L$: $\sum_{i = 1}^{k} b_i < L$. This is a strict inequality!
+Find these $k$'s for $L \in \lbrace 10, 100, 1000 \rbrace$. (\textbf{15 points})
+
+%\lstinputlisting{./hw6.R}
+
+
+%% \bibliographystyle{}
+%% \bibliography{}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+

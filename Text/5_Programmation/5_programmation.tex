@@ -1,0 +1,419 @@
+\part{Writing Programs}
+\section{Control Flow Operations}
+\subsection{Conditionals}
+
+We often want to check a conditional statement and then do something
+in response to that conditional holding, or not holding. Try (writing
+in RWinEdt):
+\begin{verbatim}
+d <- runif(1)
+if (d > 0.5) {
+  cat("\n\n today is a good day \n\n")
+}
+\end{verbatim}
+
+Here is what is happening:
+
+\begin{enumerate}
+\item \texttt{d} is a random uniform number drawn from (0,1)%
+\item we tell \R: if \texttt{d} is greater than 0.5, then do the
+  operation in the curly \texttt{} braces.%
+\item the operation in the curly braces is a \texttt{cat} statement
+  (short for `concatenate and print') which will print the contents of
+  the quotation marks.%
+\item the \verb=\n= are simply line breaks to impose a bit of
+  space between the prompt and our output.  Here that means two breaks
+  either side of the text.
+\end{enumerate}
+
+Perhaps we need \R{} to do something if the condition isn't met.  No
+problem (note the curly braces!):
+\begin{verbatim}
+if(runif(1)>0.5){
+  cat("\n\n the beatles are on itunes\n\n")
+} else {
+  cat("\n the beatles are of questionable skill \n")
+}
+\end{verbatim}
+A simpler, `hard wired' alternative to this is \texttt{ifelse()} and
+we've already encountered this.
+
+Suppose we want to check more than one condition. Then \verb!&! will
+come in handy:
+\begin{verbatim}
+
+x <- "3"
+y <- cos(3)
+
+if (runif(1) > 0.5 & rnorm(1) < 0) {
+  print(x); print(y)
+} else{
+  (plot(density(rnorm(100))))
+}
+
+if (!(rnorm(1) > 0) | !(runif(1) < 0.5)) {
+  print(x)
+  print(y)
+} else{
+  (plot(density(rnorm(100))))
+}
+\end{verbatim}
+Notice the use of \texttt{;} to have \R{} do a couple of things.
+Sometimes you'll see the use of \verb!&&!.  This means that the second
+conditional is only checked if the first one is true.  This
+would make no difference to the example above. See the help file for more information.
+
+Usefully, we can nest \texttt{if()} loops.  Try the following:
+\begin{verbatim}
+
+if (r<-runif(1) > 0.5){
+  cat("r is",r,"\n")
+  ##  
+  if(r < .6){
+    print("0.5 to 0.6")
+  } else {
+    if(.6 < r & r < .7) {
+      print("0.6 to 0.7")
+    } else {
+      print("bigger than 0.7")
+    }
+  }
+}  else {
+  print("smaller than 0.5")
+}
+
+\end{verbatim}
+
+Lots of things to notice here:
+\begin{enumerate}
+\item \texttt{(r <- runif(1)) > 0.5} checks the conditional \textit{and}
+assigns the number to \texttt{r} in one go.
+
+\item \verb!{cat("r is",r,"\n")}! reports back the value actual
+value  of \texttt{r} that has been assigned (notice the use of the
+commas) \textit{outside} the quotation marks.
+
+\item \texttt{if(r < .6){print("0.5 to 0.6")}} this occurs conditional
+on \texttt{r} being greater than .5, but less than .6
+
+\item \verb!else if (.6 < r & r < .7) {print("0.6 to 0.7")}! is checked if
+\texttt{r} is greater than 0.5, and it is not less than 0.6.
+
+\item \verb!else {print("bigger than 0.7")}! prints something if
+the previous statements are false (but \texttt{r>}0.5)
+
+\item \verb!else {(print("smaller than 0.5"))}! is the last line of
+the program and matches the first conditional (i.e. we are now in
+the case where \texttt{r} is less than 0.5)
+\end{enumerate}
+
+\subsection{Loops}
+Loops, like crystal methamphetamine, are easy to use, and easy to
+abuse. They are the workhorses of much of the \R that gets written,
+partly because they are so straightforward to write.  This is
+unfortunate is some ways, because they are often inefficient.
+Throwing caution to the wind, try the following in:
+
+\begin{verbatim}
+for (i in 1 : 1000) {
+  hist(rnorm(100), col = i, main = paste("Picture", i, sep = " "))
+}
+\end{verbatim}
+
+\begin{enumerate}
+\item this is a \texttt{for} loop: the give away is in the first
+line.  We are saying, `for' \texttt{i} between 1 and 1000, do the
+thing in the curly braces.
+
+\item here that is: draw a histogram of 100 random normal points,
+color it with color number \texttt{i} and then call it
+\texttt{Picture i} where \texttt{i}, of course, is just a number.
+
+\item actually there are not 1000 colors in \R{}'s palette, so it
+recycles some.
+
+\item see \texttt{?paste} to read the way it is used
+\end{enumerate}
+
+Of course, from a programming perspective, having this loop run
+every time you run the program maybe annoying.  One option is simply
+to wrap it into a function.  So:
+\begin{verbatim}
+homework<-function(){
+  for(i in 1:1000){
+    hist(rnorm(100), col = i,
+         main = paste("Picture", i, sep = " ")
+         )
+  }
+}
+\end{verbatim}
+Which means that the \texttt{for} loop won't run until we call it
+via \texttt{homework()}
+
+Most of the time, we want to loop through a matrix (or data set)
+take something from that matrix and put it somewhere else.
+
+First off, create a matrix---initially filled with missing
+values---to take the fruit of our labors:
+\begin{verbatim}
+mOutput <- matrix(NA, nrow = 30 , ncol = 1)
+\end{verbatim}
+Now, suppose we have a matrix like this
+
+\begin{verbatim}
+mData <- matrix(runif(900), nrow = 30)
+\end{verbatim}
+
+That is, $30\times30$ with 900 random numbers.  And we want to go
+row by row taking the mean of the row and outputting it.  This would
+work:
+\begin{verbatim}
+for (i in 1 : nrow(mData)) {
+  mOutput[i] <- mean(mData[i, ])
+}
+\end{verbatim}
+
+Notice:
+\begin{enumerate}
+\item we can use pretty much anything for our index: here it is
+  \texttt{i}; if we replaces every reference to \texttt{i} in this
+  expression with \texttt{monkey}, that would work too
+
+\item the end of the index is the number of rows in \texttt{mData}
+  (which is 30)
+
+\item now, we are assigning the mean of the $i^{th}$ row of
+\texttt{mData} to the $i^{th}$ row of \texttt{mOutput}
+\end{enumerate}
+
+So what's the problem?  The loop is perfectly accurate, but it is
+slow, and laborious to code. 
+
+We may sometimes have cause to place \texttt{for} loops within other
+\texttt{for} loops (but generally try to avoid). Here is an example:
+\begin{verbatim}
+
+mLetters <- matrix(data = NA, nrow = 10, ncol = 5)
+for (m in 1:10) {
+  for(n in 1:5){
+    mLetters[m,n] <- (letters[n + m])
+  }
+}
+\end{verbatim}
+
+Look at \texttt{letters}. What is it? What does this code do?
+
+Notice that the way we are indexing the loops
+matters here.  If we put \texttt{mLetters[n, m]} instead of
+\texttt{mLetters[m, n]}in our code, we'll get the dreaded
+\begin{verbatim}
+Error: subscript out of bounds
+\end{verbatim}
+There are alternatives to \texttt{for} which are used in different
+circumstances.  Examples are \texttt{while} and \texttt{repeat}
+which are often used together.
+
+\subsection*{Other Types of Loops}
+The syntax for \texttt{while} is \texttt{while(condition)
+expression} which means while a particular condition holds, the
+\texttt{expression} will be executed. \texttt{repeat(expression)}
+simply repeats the \texttt{expression} operation again and again and
+again.  This type of thing turns up a lot in monte-carlos. Consider
+the following:
+\begin{verbatim}
+n <- 1
+mF <- matrix(NA, nrow = 10, ncol = n)
+
+while (n < 36) {
+  repeat{
+    vF <- rbinom(10, 1, 0.5)
+    if (sum(vF) %% 2 == 0) {
+      break()
+    }
+  }
+  mF <- matrix(cbind(mF[, 1 : (n-1)], vF), nrow = 10, ncol = n)
+  n<-n + 1
+}
+\end{verbatim}
+Here, while \texttt{n} is less than 36, I need to repeatedly sample
+from a binomial (with a sample size of 10) until an even number of
+the sample are ones.  So, for example, $[1,0,0,0,0,0,0,1,1,0]$ won't
+do, but $[1,1,0,0,1,1,0,1,1,0]$ is fine. As soon as I get a sample
+fulfilling my requirements, it should be stored (in \texttt{mF}).
+Notice that I have to increment the loop with \texttt{n + 1} or else
+the condition \texttt{n < 36} will be true forever, and the program
+will never stop.
+
+Just to make this point, consider
+\begin{verbatim}
+repeat(cat("\n lake effect snow today\n"))
+\end{verbatim}
+which won't end until you hit \texttt{esc} or \texttt{STOP}.
+
+\section{Sampling}
+Quite often we have to sample from a (posterior) distribution we
+created. In general, we want to sample \texttt{n} values, but we want
+the sample we produce to be `weighted'---in the sense that it is
+proportional to the mass---for each value of our discrete support
+(say, the thousand values of $\theta$ we created for our homework.
+
+We could put together the numerical cdf, but it easier to use
+\texttt{sample} directly.
+\begin{verbatim}
+vCand <- seq(0, 1, 0.001)
+vP <- dchisq(vCand, df = 15)
+vS1 <- sample(vCand, 1000, replace = TRUE, prob = vP)
+
+vDraws <- rnorm(length(vCand))
+vS2 <- sample(vDraws, length(vDraws), replace = TRUE)
+\end{verbatim}
+
+Here, I'm assuming that we first took 1000 values between zero and
+one, and then we worked out that the posterior,$\Pr(\theta|y)$, was
+$\chi^2_{15}$ (which is unlikely, but anyway).  Then we sampled:
+\begin{enumerate}
+\item the object of our sampling was our candidate $\theta$ values.%
+\item we wanted a sample of size 1000
+\item we \texttt{replace}d the candidates each time we sampled
+\item we set \texttt{prob = vP} which means we are sampling in
+proportion to the posterior we calculated.
+\item What could \texttt{vS2} look like if we used \texttt{replace = FALSE}
+
+\end{enumerate}
+
+\section{Functional Programming}
+\subsection{Basics}
+Creating a function is very easy and any time you use code over and
+over again (e.g.\ typed manually, in a loop, next semester) you can
+and should wrap that code up in a function. Functions take in
+arguments (objects) and return a single object.
+
+Consider:
+\begin{verbatim}
+SayHello <- function()
+  {
+    cat("\n \n \n Hello World \n \n \n")
+  }
+\end{verbatim}
+Try both \texttt{SayHello} and \texttt{SayHello()}. One displays the
+function itself and one displays the output. That is, loosely
+speaking, the two are the difference between $f$ and $f(x)$ for some
+fixed value $x$.
+
+In this function, there are no arguments and we don't create any
+objects for latter use, but this need not be the case.
+
+\begin{verbatim}
+GetCos <- function (x = 0)
+  {
+    vC <- cos(x)
+
+    return(vC)
+  }
+\end{verbatim}
+
+\texttt{GetCos()} takes a single argument which has a default value of
+0. Then, we calculate the cosine of $x$ and assign it to
+\texttt{vC}. Lastly, before the function ends, we tell \R{} that the
+output of the function is \texttt{vC}.
+
+Try \texttt{GetCos(1)} and \texttt{GetCos()}. Have we created any new
+objects in our workspace, namely \texttt{vC}? No. To save the output
+for latter use we would do
+\begin{verbatim}
+vOut <- GetCos()
+\end{verbatim}
+
+If we have more than one object to return at the end of the function,
+we can wrap these objects up together in another single object.
+
+Consider 
+\begin{verbatim}
+GetTan <- function (x)
+  {
+    vT <- tan(x)
+
+    vTT <- "your face is a tangent!"
+    
+    return(list(vT, vTT
+                )
+           )
+  }
+
+GetTan(1)
+\end{verbatim}
+
+We return the output as a list (because the objects had different
+modes) and we use something like \verb=lOutput2 <- GetTan(4)= to save
+it for future use.
+
+If you pass a function an argument that it was not expecting based on the
+function definition, you will get an error.
+
+If you don't pass a function an argument that it was expecting based
+on the function definition, you will get an error.
+
+\subsection{Scope}
+There are some very important rules to follow when using functions to
+keep things clear. First, realize that a function is a temporary
+workspace (or environment in \R{}-speak). The arguments are one-way
+traffic onto this island. The \texttt{return} statement is one-way
+traffic off the island.
+\begin{enumerate}
+\item any object not created by and contained within your function
+  should be passed to it as an argument
+
+\item any object(s) to be used later should be returned by your
+  function
+
+\item functions (with the exceptions of \texttt{save}, \texttt{plot},
+  etc.) should not have side-effects
+\end{enumerate}
+
+Consider this code:
+\begin{verbatim}
+vThing <- 4
+
+GetSquare <- function()
+  {
+    vThing ^ 2
+  }
+
+GetSquare()
+
+rm(vThing)
+
+GetSquare()
+\end{verbatim}
+
+We violated our rule of relying on other objects only through the
+arguments. And, we can see how easily our function becomes worthless
+if we don't listen to that rule.
+
+Using the \verb!<<-! operator is a quick way to violate our other
+rules.
+
+Try:
+\begin{verbatim}
+BadFunc <- function()
+  {
+    cat("i woke up at 8am and all i got was this lousy R function")
+    
+    mLetters <<- "gone! mwahhahhah"
+  }
+\end{verbatim}
+
+Look at \texttt{mLetters} from before. We changed it even though we
+didn't pass the function any arguments, we didn't return any object as
+output, and we didn't assign output to an identifier. Had we used
+\verb=<-= instead of \verb=<<-=, we would only have altered the object
+\texttt{mLetters} within the function environment so nothing would
+have been overwritten.
+
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../full_course"
+%%% End: 

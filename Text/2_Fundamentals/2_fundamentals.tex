@@ -1,0 +1,319 @@
+\part{Fundamentals of Working in R}
+
+This part of the course is an introduction to the different building
+blocks in \R{}, objects.
+
+\section{Objects, Modes, and Attributes \ldots \textit{Oh my!}}
+
+The following description is typically not covered in introductions to
+\R{}. It may seem weird, un-welcoming, and esoteric. In some sense, it
+is. But, the reality is, if you can keep this in mind as you become
+familiar with \R{} you will understand why and how things happen.
+
+\subsection{Objects}
+
+Within \R{}, the basic units or entities are called ``objects''. The
+following are the basic objects that you will use as you learn
+\R{}. There are many more.
+
+\begin{description}
+
+\item[vectors] These are exactly what you think they are. A sequence
+  of elements of the same \textit{mode}. We'll talk about modes in a
+  second. Vectors have order. You can have a vector of length 26
+  (i.e.\ 26 elements) where each element is a letter in the
+  alphabet. This vector's mode will be \texttt{character}.
+
+\item[lists] Lists are similar to vectors. They are sequences of
+  elements. They have order. However, each component of a list need
+  not be of the same mode. You can have a list with two elements. The
+  first element being a vector containing the 26 characters in the
+  English alphabet and the second element being a vector contain the
+  26 relative frequencies of these characters as they show up on the
+  Political Science Department's website. These two vectors are not of
+  the same mode and could not be combined into a single stacked
+  vector. But, we can combined them in a list.
+
+\item[matrices/arrays] Matrices are 2-dimensional rectangular
+  objects. Arrays are higher dimensional ``rectangular'' objects. Each
+  element must be of the same mode (e.g.\ everything is a character
+  sting, logical value, numerical value, etc.)
+
+\item[dataframes] Dataframes can be thought of as \textit{special}
+  matrices. However, they technically are \textit{special} lists. In
+  general, you will tend to store your empirical data in
+  dataframes. These objects are two dimensional containers with the
+  rows corresponding to ``observations'' and the columns corresponding
+  to ``variables''.
+
+\item[factors] These are vectors which are intended to help classify
+  categorical data. They are handle differently than numerical,
+  integer, or character vectors. Notice, though, factors are a
+  different class of object, not a different mode.
+
+\item[functions] Functions, although less obviously so, are also
+  objects. The details of functions vary, but the general idea is
+  simple. This object takes other objects (of any mode),
+  performs even more basic functions on those objects and returns some
+  final object (of some arbitrary mode).
+\end{description}
+
+\subsection{Modes}
+
+\begin{description}
+\item[logical] elements of either \texttt{TRUE} or \texttt{FALSE}
+
+\item[integer] integer numbers like 1, 2, or -539
+
+\item[numeric] real numbers; don't use 1.00, 2.00, and 3.00 when
+  1, 2, and 3 will do
+
+\item[complex] complex or imaginary numbers; you will most likely not
+  use them much in applied political methodology but they can come up!
+
+\item[character] elements made up of ``text''; each character string
+  can be some arbitrary length; \texttt{``1''} is not \texttt{1} in \R{}
+
+\item[raw] you can safely ignore this mode!
+
+\end{description}
+
+\subsection{Attributes}
+
+The command \texttt{attributes()} can be used to set and extract the
+attributes of an arbitrary \R{} object. Attributes can be accessed
+through this general function or through particular functions which
+are focused on a particular attribute. We won't cover how to do this
+or why we would do this, here is an example of some attributes:
+\begin{enumerate}
+\item the length of a vector of any mode (\texttt{length()})
+\item the size of a matrix or a higher dimensional array (\texttt{dim()})
+\item the column names of a dataframe (\texttt{colnames()})
+\end{enumerate}
+
+\section{Assignment, References, Scope}
+So far, we've superficially described objects in \R{}. Everything is
+an object! Our data are an object. The results from a linear
+regression are an object. The function that runs a linear regression
+is an object.
+
+Once we have created an object that we need, we can store it as its
+own named object instead of re-computing it. So, if we want to save
+the value of $2 \pi$ and recall it without having to continuously
+multiple the two factors, we can create an object called
+\texttt{vTwoPi} (or \texttt{BillRiker} for that matter).
+
+After we have assigned this value to a name, we can recall it in
+various ways.
+
+\subsection{Assignment}
+
+The standard assignment operator is \texttt{<-}. One \textit{could}
+also use \texttt{=}, but you should not. We will keep \texttt{=} for
+another use. Assignment can happen in the other direction,
+\texttt{->}. The general form of the use of the assignment operator is
+\verb= name <- object=. Although quotes aren't necessary,
+\verb= "name" <- object= is identical.
+
+An object is saved with the name \texttt{name} once this command is
+run regardless of if an object of name \texttt{name} exists or
+not. You can easily overwrite an object this way. You may want to or
+you may not.
+
+\subsubsection{Naming Rules}
+
+However, when you name an object, you must follow certain rules.
+
+Briefly, these are:
+
+\begin{quote}
+  Identifiers consist of a sequence of letters, digits, the period
+  (`.') and the underscore. They must not start with a digit nor
+  underscore, nor with a period followed by a
+  digit.\footnote{\url{http://cran.r-project.org/doc/manuals/R-lang.html\#Identifiers}}
+\end{quote}
+
+In addition \texttt{TRUE}, \texttt{FALSE}, \texttt{Inf}, \texttt{NaN},
+\texttt{NA}, \texttt{NULL}, \texttt{if}, \texttt{else}, \texttt{for},
+\texttt{in}, \texttt{while}, \texttt{next}, and \texttt{break} are
+reserved words.
+
+I recommend the following convention for naming objects in \R{}. If I
+want to associate the name ``foo'' or ``Foo'' with an object and it is
+a vector (or factor vector), I name it \texttt{vFoo}. For objects of
+the other classes, I use \texttt{lFoo}, \texttt{dfFoo}, and
+\texttt{mFoo}.
+
+The exception to this pattern is my naming of functions. Then, I use
+action words and capitalization to name the function \texttt{DoFoo} or
+\texttt{CalcFoo}.
+
+\subsection{References}
+
+If a vector object is named \texttt{vFoo} and you would like to
+display or ``print'' the object, type \texttt{vFoo} and hit
+\textit{enter}. Notice, \verb=print(vFoo)= will do the same
+thing. \R{} automatically calls the \texttt{print()} function when you
+simply enter the object name.
+
+You can achieve the same thing with the more powerful function
+\texttt{get()}.
+
+If you are at the \R{} prompt, \R{} will help you choose the full name
+of an object you are referring to. This is called tab completion. If
+you type the beginning of a name of an object that \R{} knows about
+and then hit \textit{tab} twice in succession, \R{} will print out a
+list of object names (e.g. vectors, functions, etc.) that are
+possible completions of the partial name you typed. For example, type
+``\texttt{print}'' and invoke the tab completion. Look how many
+objects \R{} knows about that begin with these five letters.
+
+\subsection{Scope}
+
+The scoping rules of the \R{} parser are slightly beyond this
+tutorial. But see
+\url{http://cran.r-project.org/doc/manuals/R-lang.html#Scope} to
+understand them. The \R{} workspace is a hierarchy of layers. Objects
+can exist in any of these layers (or environments/frames) and the
+scoping rules determine which objects are being manipulated or
+created. \texttt{.GlobalEnv} (an object) is the user's workspace and this is where
+we will focus our attention for the time being.
+
+\section{Asking for Help}
+
+Asking for help in \R{} can be tricky for the following reasons:
+\begin{itemize}
+\item Depending on who you ask you may not like the response (e.g.\
+  some people have been ridiculed on mailing out questions that are
+  poorly formed). These communities have norms, if you want help,
+  observe the norms before you start shooting off emails.
+
+\item The language you use matters when you are searching. Knowing the
+  right language is often half of the problem.
+
+\item Not everyone is solving your exact problem. So you have to
+  abstract away from your problem, find an applicable solution to the
+  more general problem and then apply it to your specific case.
+\end{itemize}
+
+Follow these steps:
+\begin{enumerate}
+\item Begin looking for help/clarification in the official
+  \R{} documentation.
+
+\item If that fails, try a general web search with google. You will
+  most likely want to append ``cran r'' to whatever topic you are
+  looking for help with instead of just ``r''. The latter will not
+  filter out unrelated sites too well.
+
+\item Next, turn to the \R{} specific search engines.
+
+\item Try re-wording your query. Read up on related topics to see if
+  there are any hints on what might create a more successful search.
+
+\item Ask a colleague in person. It is easier to explain these
+  problems in person with code in front of you than communicating to
+  someone else in the \R{} community.
+
+\item Lastly, do your homework before you post in a public setting. It
+  is not scary and people are helpful. But, they also tend not to be
+  too patient with people who look for help without reading the
+  mailing list or forum posting guidelines. No need to rock the boat.
+\end{enumerate}
+
+\subsection{R Documentation}
+If you want to know about the object \texttt{foo}, you can type
+\verb=help(``foo'')= or \verb=?foo=. If \texttt{foo} is not an object
+in your current session with documentation, you will have no results.
+
+If you want to search the \R{} help files for a concept or topic
+\texttt{foo}, try \verb=??foo= or \verb=help.search(``foo'')=.
+
+Next, try \texttt{help.start()}. This will bring up the HTML interface
+to the help facilities. Here, you can find HTML versions of the \R{}
+manuals which are worth searching. You can also browse
+package-specific documentation through this interface.
+
+\subsection{R Community}
+
+\begin{description}
+\item[Stack Overflow]
+  <\url{http://stackoverflow.com/questions/tagged/r}> If you have
+  looked for an answer to how to do something and have found nothing,
+  try posting here first. Posting to the mailing list is a bad idea
+  and can be embarrassing. Stack Overflow tends to be more friendly.
+
+\item[R Meta Search] <\url{http://search.r-project.org/}> You can
+  search just about every official web page and mailing list from this
+  site.
+
+\item[R Seek] <\url{http://www.rseek.org/}> Less impressive
+  meta-search engine.
+
+\item[R Graphics Gallery]
+  <\url{http://addictedtor.free.fr/graphiques/}> Site with many
+  examples of graphs and the code that generates them. Useful for
+  getting started with fairly complex graphical output.
+
+\item[inside-R] <\url{http://www.inside-r.org/}> Community site run by
+  Revolution Analytics. Blog posts, a forum, snippets, etc.
+
+\item[R-Forge] <\url{http://r-forge.r-project.org/}> Development
+  platform for \R{} packages. You might find what you need here before
+  it is found elsewhere.
+
+\item[R-wiki] <\url{http://rwiki.sciviews.org/doku.php}> Pretty low
+  traffic site site. However, many useful code snippets. Navigating
+  this site can be an art.
+
+\end{description}
+
+\section{Exercises}
+Enter all of the code in these exercises in a text file. Give it a
+\texttt{.R} file extensions. Add some useful information at the top
+about what this file by using comments. Run the code using RWinEdt's toolbar.
+
+\begin{enumerate}
+\item Create two numerical vectors:
+\begin{verbatim}
+vA <- c(1, 3, 5, 7)
+vB <- (vA + 3) / 2
+\end{verbatim}
+
+\item Create a third vector by comparing the value of \texttt{vA} and \texttt{vB}:
+\verb=vC <- vA > vB=
+
+\item Use \texttt{print()} to inspect each vector. Now inspect each
+  vector by referencing it on its own line.
+
+\item What type of vector is \texttt{vC}? Try \texttt{is(vC)}.
+
+\item What type of object is the output of \texttt{is(vC)}? Try \texttt{is(is(vC))}.
+
+\item Coerce \texttt{vA} to a character vector with
+  \texttt{as.character()}. What happens? If you get an error, use
+  \texttt{?as.character}.
+
+\item Run \verb=is.logical(is.logical(as.character(vA)))=. Does the
+  output make sense? What kind of object is the output?
+
+\item Create a matrix where \texttt{vA} and \texttt{vB} are the rows
+  using \verb=rbind(vA, vB)=. Now do the same with the columns with
+  \verb=cbind(vA, vB)=. Confirm that each of these is a matrix using
+  either \texttt{is()} or \texttt{is.matrix()}. How do the output of
+  these two differ?
+
+\item Search for help on \texttt{data.frame()} using
+  \texttt{?}. Knowing how to read \R{} help pages is a critical skill.
+
+\item Create a dataframe from \texttt{vA}, \texttt{vB}, and \texttt{vC}.
+
+\item Find two \R{} packages that would help you do \textit{ideal
+    point estimation}.
+
+\end{enumerate}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../full_course"
+%%% End: 

@@ -1,0 +1,474 @@
+\part{Case Two: Realistic Data Management and Realistic Plotting}
+
+This part of the short course is designed to take the basic data
+management skills acquired in the last part and put them to use on a
+more realistic problem. Similarly, we will work with this data to
+construct polished figures describing certain aspects of our
+data. Lastly, as we proceed through this more realistic example, we
+cover topics that you will encounter when you start to work on real
+problems, not just problem sets: installing and loading packages,
+saving textual output, and saving graphical output.
+
+\par Because some of the code used here is slightly more involved than
+an introductory level, don't worry about ``getting it''
+immediately. The details of various functions come with time. You can
+always refer back to these examples and the \R{} help files when you
+do your own work.
+
+\section{Statement of Problem}
+Let's consider the United States of America for this example. More
+specifically, we will take state level data for 2005. We are
+interested in the relationship between the proportion of the
+population that is incarcerated, debt and other financial indicators
+of the state, and major professional sports teams within the
+states. As fascinating of a dataset as this may sound to be, the
+reality is that the data does not come pre-loaded in \R{}. Therefore,
+we will have to do some work to get the data in \R{} and then to merge
+the different sources.
+
+\section{Loading the Data Files}
+Although finding usable data is one of the harder components of data
+analysis (believe it or not), the files we need for this analysis are
+ready and waiting.\footnote{These plain text data files should be
+  available however this document was accessed, but, if not, an email
+  to \url{jpolmted@gmail.com} will remedy that.}
+
+Locate \texttt{spending.csv}, \texttt{prison.xls}, and
+\texttt{teams.csv} on your machine. Ensure that they are in a place
+that is easily accessible.
+
+When we load pre-existing data into \R{}, there are two kinds of files
+we might work with. If we have data in a plain text format (i.e.\ we
+can open it in a text editor) our life is easy (relatively
+speaking). If we have data in a binary format (i.e.\ a MS Excel
+spreadsheet, a Stata dataset) our life might be easy or it might be
+hard. In our case, though, since we have two plain text files and a MS
+Excel file (which is standard) we will have no problem getting this
+data into \R{}. Indeed, there is an entire manual on this
+topic.\footnote{\url{http://cran.r-project.org/doc/manuals/R-data.html}.}
+
+To read in plain text formatted data, try \texttt{?read.table}. There,
+we see five related commands. These different functions are based on
+the same \texttt{read.table()} function, but have different default
+argument values to facilitate reading particular kinds of data. Which
+one should we choose? It depends what our data look like. Because
+\texttt{spending.csv} and \texttt{teams.csv} are plain text files we
+can open them in a text editor. Go ahead and do this. 
+
+We can now see that we are interested in using \texttt{read.csv2()}
+because the fields are separated by a semi-colon (\texttt{;}) The
+first argument to this function is \texttt{file} and we need to pass
+the function a character string describing the location of the file on
+the machine. There are two ways of doing this. First, you could give
+\R{} the absolute path to the location of the data file.. If you
+choose this way, every time you tell \R{} where a file is, you have to
+start with a drive (e.g. ``\texttt{C:/}'', ``\texttt{F:/}'') and then
+you will work through the hierarchy of directories. Second, you tell
+\R{} where your \textit{working directory} is and then, afterwards,
+you need only specify the location of the file relative to the working
+directory. Let's use the second option. Each way has its advantages
+and disadvantages and as you advance, the two will both be easy.
+
+\begin{verbatim}
+getwd()
+setwd("Z:/stuff")
+\end{verbatim}
+
+We can ask \R{} where the current working directory was and then we
+change it to the directory \texttt{Z:/stuff}. Be certain that the
+directory exists. What happens if it doesn't?  Also, make sure the
+data files are in this directory.
+
+Try:
+\begin{verbatim}
+read.csv2(file = "teams.csv", header = FALSE, skip = 5)
+\end{verbatim}
+
+If we use one of the other functions, \R{} will get structure the data
+incorrectly (unless we override all of the defaults). Test it out to
+verify this. 
+
+What is the output of this call to \texttt{read.csv2()} (Hint: use
+\texttt{is})? What kind of object is the returned value from this
+function? What do the arguments we passed do?
+
+This time, let's use
+\begin{verbatim}
+dfTeams <- read.csv2(file = "teams.csv", header = FALSE, skip = 5)
+dfSpending <- read.csv2(file = "spending.csv", header = TRUE, skip = 7)
+\end{verbatim}
+
+The second \textit{comma separated values} file is set up slightly
+differently so we need to change the arguments.
+
+The last file we need to load in is an MS Excel file. Take a moment to
+try to find a function to read in MS Excel files. The package
+\texttt{gdata} provides the function \texttt{read.xls()}. To access
+this functionality, we will install the package, load it, and then
+read the help file.
+
+\begin{verbatim}
+install.packages("gdata")
+library("gdata")
+?read.xls
+\end{verbatim}
+
+After looking at the help file, try
+\begin{verbatim}
+dfPrison <- read.xls("prison.xls", skip = 3, header = TRUE)
+\end{verbatim}
+
+As with the first two \texttt{read.*} functions, if we do not assign
+the object to an identifier the data are read into \R{} and the
+dataframe object is printed to the display. By assigning it, we can
+refer the dataframe by name instead of re-importing it.
+
+\section{Cleaning and Merging the Data Files}
+Take a look at the dataframes we have created. If the output is a
+little overwhelming, try using the \texttt{head()} and \texttt{tail()}
+commands. How many observations are there in each dataframe? How many
+variables?
+\begin{verbatim}
+dfSpending
+dfTeams
+dfPrison
+
+head(dfSpending)
+head(dfTeams)
+head(dfPrison)
+
+tail(dfSpending)
+tail(dfTeams)
+tail(dfPrison)
+
+dim(dfSpending)
+dim(dfTeams)
+dim(dfPrison)
+\end{verbatim}
+Notice that \texttt{dfSpending} has more than 50 rows. Look at the
+dataframe. Why is this? Notice that \texttt{dfTeams} has only 26
+rows. The other states not listed have 0 teams. We aren't ``missing''
+the data, per se. It just isn't included. However, for
+\texttt{dfPrisons} we don't have data for two of the states. Each of
+these issues needs to be treated in turn so that we can produce a
+unified, homogeneous dataset.
+
+Clean up the spending data with the following code:
+\begin{verbatim}
+dfSpending1 <- dfSpending[-c(9, 45),]
+\end{verbatim}
+What are we doing here?
+
+In order to merge these dataframes together we will use the function
+\texttt{merge()}. Open the help file. Let's start with merging the
+spending data and the sports teams data. Then, we'll clean up the
+variable names and address the ``missing'' data for states without any
+teams. 
+
+\begin{verbatim}
+dfData1 <- merge(dfSpending1, dfTeams, by.x = "State", by.y = "V1", all.x = TRUE)
+names(dfData1)[names(dfData1) == "V2"] <- "teams"
+names(dfData1)[1:6] <- c("state", "sls", "sld", "gsp", "rsg", "pop")
+dfData1$teams[is.na(dfData1$teams)] <- 0
+\end{verbatim}
+
+\begin{itemize}
+\item we merge two dataframes by specifying which variable in each
+  dataframe should be used as a key
+\item the merged dataframe is assigned to a new identifier
+\item we manipulate the column names of the dataframe by working on
+  the vector object that results from \texttt{names()}
+\item we force the value of the variable to be 0 for any observation
+  where we previously had it coded as \texttt{NA}.
+\end{itemize}
+
+The last step is important because we know these states have 0
+teams. That is different from the missingness implied by an
+\texttt{NA}. Observations with \texttt{NA}'s are often dropped, so
+replacing these with 0 is a good thing for our application.
+
+In order to merge \texttt{dfData1} with \texttt{dfPrison}, we would
+need them to have a variable in common and they don't. The closest we have are the
+state variables. But, they are not identical, so the merge would not
+result in what we want. First, we code a new state variable in
+\texttt{dfData1} and then we merge the dataframes.
+\begin{verbatim}
+dfData1$state_lower <- tolower(as.character(dfData1$state))
+dfData2 <- merge(dfData1, dfPrison, by.x = "state_lower", by.y = "state", all = TRUE)
+\end{verbatim}
+This is the second block of code that manipulates character vectors
+for some purpose. This will become a useful skill.
+
+Finally, we have a dataframe with all of our variables in it. Let's
+add one more variable based on whether or not the state is in the
+south.
+\begin{verbatim}
+vSouth <- c("arizona", "new mexico", "texas", "oklahoma", "arkansas",
+            "louisiana", "mississippi", "alabama", "florida", "georgia",
+            "tennesee", "south carolina", "north carolina", "kentucky",
+            "virginia", "west virginia"
+            )
+dfData2$south <- is.element(dfData2$state_lower, vSouth)
+\end{verbatim}
+
+The function \texttt{is.element()} is a helpful function. Type
+\texttt{?set} to see similar functions. This is a clear example of one
+issue many \R{} beginners struggle with: \textit{finding the name of
+  the function that performs fairly straightforward tasks}. As you use
+\R{} more and more, you come across an increasing number of these
+functions and will recall them in the future. Until then, don't
+hesitate to ask.
+
+In this code, I am just tidying up some vector types and coercing my
+way through. You need not understand exactly what is going on
+here. You will in time, though.
+\begin{verbatim}
+dfData2[, 3:7] <- apply(dfData2[, 3:7], 2, function(X) as.numeric(as.character(X)))
+\end{verbatim}
+
+This has been a good amount of work to create a unified dataframe from
+disparate sources. Moreover, this data started off in a fairly clean
+form.\footnote{I did some pre-processing of the data to simplify steps
+  in \R{}.} In practice, you will spend a lot of time getting your
+data ready for analysis. Some people prefer to do these steps in other
+software packages like Stata. This is wholly unnecessary and is not
+recommended. Everything can be done in \R{}.
+
+\section{Numerical Summaries of the Data}
+
+We have previously covered the use of simple functions to provide
+quantitative summaries of our data. So, for this example, instead of
+repeating those steps, we will focus on some more advanced functions.
+
+In the future, the packages \texttt{reshape} and \texttt{plyr} should
+be used early and often. They provide some of the smartest functions
+related to data management in \R{}.
+\begin{verbatim}
+install.packages(c("reshape", "plyr"))
+library(reshape)
+library(plyr)
+\end{verbatim}
+
+We recall that \texttt{summary} gave us univariate descriptions of
+each of our variables. For example, there are fifteen states in the
+south (\texttt{south}), the median state population is 4.2 million
+(\texttt{pop}), and the maximum real state growth rate is 9.4\%
+(\texttt{rsg}). Instead, suppose we wanted to discuss these same
+quantities, but we wanted to summarize the data as if it belonged to
+two different groups, those states that have professional sports teams
+and those that do not.
+
+We could subset the data twice and then invoke
+\texttt{summary}. However, there are cleaner and more powerful ways to
+do this. Consider this code:
+\begin{verbatim}
+dfData2$teams2 <- ifelse(dfData2$teams > 0, 1, 0)
+dfTemp1 <- melt(dfData2, measure.vars = c("rsg", "pop"), 
+                         id.vars = c("state", "south", "teams2")
+                )
+cast(dfTemp1, teams2 ~ ., subset = (variable == "rsg"), mean, margins = TRUE)
+\end{verbatim}
+We have calculated the mean real state growth rate for those states
+with professional sports teams and those without.
+
+Similarly, we can calculate the average population for states falling
+within the four categories obtained when we cross-classify being in
+the south with having a professional sports team. The average state
+population is larger in states in the south than those not in the
+south. Similarly, the average population in states with sports teams
+is larger than those without.
+
+Although the dataset we put together contains all of the information
+to compute these values, their calculation is not immediate with any
+of the tools we yet know.
+
+Lastly, consider the function \texttt{sink()}. Rerun the
+\texttt{melt()} and \texttt{cast()} code after trying:
+\begin{verbatim}
+sink(file = "foo.txt")
+\end{verbatim}
+All of the \R{} output will be sent to that file instead of the
+screen. After running the aggregation, run \texttt{sink()} to close
+the connection. Now, open up \texttt{foo.txt}. If you add the line
+\texttt{cat("output")} in with your code it will annotate the
+``sunken'' output. Still, you must remember that you will not have the
+luxury of knowing exactly which command generated what unless you
+compare it to your source code.
+
+\section{Graphical Summaries of the Data}
+
+Now, we will look at how to create a polished plot and save it to an
+external file. There is no way to introduce all of the possible plot
+types that are available. The way to learn this is to focus on
+understanding what the plotting parameters mean. Then, at a later
+date, you can combine that knowledge, your experience, and the \R{}
+help files together to figure it out. The \texttt{plot()} command is
+very generic and will try to guess the plot that makes the most sense
+for your data.
+
+Create a scatter plot of \textit{number of professional teams} against
+\textit{state population}.
+\begin{verbatim}
+plot(dfData2$pop, dfData2$teams)
+\end{verbatim}
+
+Load the \texttt{ggplot2} package (or install it first if it is not
+installed). We want the \texttt{alpha()} function from the
+\texttt{ggplot2} package and the below code will not work without it.
+
+The previous plot is rather spartan and not very helpful. Instead, try
+\begin{verbatim}
+plot(x = subset(dfData2, south == 0)$pop, y = subset(dfData2, south == 0)$teams,
+     main = "Teams by Population",
+     xlab = "State Population (Millions of People)",
+     ylab = "Professional Sports Teams (Count of Teams for Real Sports)",
+     cex.main = 2,
+     pch = 3,
+     col = 3
+     )
+points(x = subset(dfData2, south == 1)$pop, 
+       y = subset(dfData2, south == 1)$teams,
+       pch = 1,
+       col = 5
+       )
+abline(v = mean(dfData2$pop),
+       col = alpha(1, .3)
+       )
+abline(h = mean(dfData2$teams),
+       col = alpha(1, .3)
+       )
+text(x = 15, y = 17,
+     paste("Correlation", cor(dfData2$pop, dfData2$teams))
+     )
+legend(x = 20, y = 15,
+       legend = c("Non-South", "South", "", "Marginal Avg"),
+       pch = c(3, 1, NA, NA),
+       col = c(3, 5, NA, alpha(1, .3)),
+       lty = c(NA, NA, NA, 1)
+       )
+\end{verbatim}
+This figure is produced using what is known as the \textit{base}
+graphics package.
+\begin{itemize}
+\item \texttt{plot()} creates the initial scatter plot based on the
+  first subset of the data
+\item since \texttt{plot()} is deciding on the geometry of the figure,
+  it will reflect only the data that it has
+\item overriding the automatic calculation of axis limits and other
+  aspects is sometimes the trick to successfully plotting multiple
+  instances of subsetted data on the same figure
+\item we set the title (\texttt{main}) and labels (\texttt{xlab},
+  \texttt{ylab}) arguments here
+\item \texttt{points()} allows us to add points to an already existing
+  plot (like the one we just created with \texttt{plot()})
+\item \texttt{abline()} is a general function that allows us to add
+  straight lines
+\item notice that when we specify the color (\texttt{col = ...}) we
+  can use the \texttt{alpha()} function to provide us
+  transparency\footnote{For more help on choosing colors see
+    \url{http://research.stowers-institute.org/efg/R/Color/Chart/}}
+\item \texttt{text()} allows us to add arbitrary text
+\item instead of hard coding the correlation coefficient we used the
+  \texttt{paste()} command to turn a string and a numeric object into
+  one longer string
+\item \texttt{legend()} allows us to add a legend where we want
+  (\texttt{x, y})
+\item the legend is entirely custom, so it reflects only what you tell
+  it and the order in which you tell it things
+\item we customize the legend by specifying which shape, color,
+  linetype, etc. should show up on each line, \texttt{NA} let's us
+  ``skip'' one of these attributes
+\end{itemize}
+
+Alternatively, we could compare distributions of the incarceration
+rates among states for states in the south vs.\ those not in the
+non-south and for whites vs.\ blacks.
+
+\begin{verbatim}
+boxplot(value  ~ variable + south,
+        data = melt(dfData2, id.vars = c("south", "state"),
+            measure.vars = c("white", "black")            
+            ),
+        notch = FALSE,
+        names = c("White, Non-South", "Black, Non-South",
+            "White, South", "Black, South"
+            ),
+        main = "State Incarceration Rates by Region and Race",
+        ylab = "Count Incarcerated per 100,000 Population"
+        )
+\end{verbatim}
+
+We can see several things: one \R{} related, one not. First, some of
+the specifics change depending on the kind of plot we are making, but
+many things carry over directly. Second, it is no surprise this
+country has some race relation problems. We can't even blame the south
+in this instance! (Don't close the plot.)
+
+In fact, this reality is so unbearable that you should type:
+\begin{verbatim}
+rect(0,0,5,5000,
+     density = 1,
+     angle = 135,
+     lwd = 10
+     )
+rect(0,0,5,5000,
+     density = 1,
+     angle = 45,
+     lwd = 10
+     )
+title(sub = "lock this result up!")
+\end{verbatim}
+The point of this demonstration is to show you that the order in which
+you add things to plots matters. The items at the end are layered on
+top of the previous parts. Whatever you want on the bottom is what you
+should plot first.
+
+Also, notice that coordinates given to specify locations are relative
+to the units on the axes of the figure.
+
+Now, there are two ways to save these figures. There is the
+\textit{smart} way and then the other way. The other way involves
+using the menu and saving the image as some inferior file format. Do
+not do this.
+
+Instead, consider the figure created by
+\begin{verbatim}
+plot(density(replicate(1000, mean(runif(10))
+                       ),
+             kernel = "rectangular"
+             )
+     )
+\end{verbatim}
+
+You can save this file as a \texttt{.pdf} with 
+\begin{verbatim}
+pdf(file = "draws.pdf")
+
+plot(density(replicate(1000, mean(runif(10))
+                       ),
+             kernel = "rectangular"
+             )
+     )
+
+dev.off()
+\end{verbatim}
+This figure is saved as a \texttt{.pdf} file to the working
+directory. And, in fact, everything I add to this plot will continue
+to go to the file until the command \texttt{dev.off()}. Note, this
+command is necessary to finalize the file. Similar functions exist to
+save figures as other filetypes: \texttt{jpeg()}, \texttt{ps()},
+\texttt{png()}.
+
+In the long run, I recommend using the \texttt{ggplot2} package to
+create figures and not \textit{base}, though \textit{base} is a good
+place to start. Not surprisingly, \texttt{ggplot2} is maintained by
+the same person who authored the \texttt{reshape} and \texttt{plyr}
+packages. Also, you may be interested in the \texttt{tikzDevice}
+package for inclusion of figures natively in \LaTeX{}.
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../full_course"
+%%% End: 
